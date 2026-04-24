@@ -8,7 +8,7 @@ if (!function_exists('format_date')) {
         if (empty($timestamp)) {
             return '--';
         }
-        return date('Y-m-d H:i', $timestamp);
+        return date('Y-m-d H:i', is_numeric($timestamp) ? $timestamp : strtotime($timestamp));
     }
 }
 
@@ -25,14 +25,27 @@ if (!function_exists('get_config')) {
         static $configs = null;
         
         if ($configs === null) {
-            $configs = \think\facade\Cache::get('system_configs');
-            if (!$configs) {
-                $configList = \app\model\Config::select();
-                $configs = [];
-                foreach ($configList as $config) {
-                    $configs[$config->key] = $config->value;
+            $configs = [];
+            try {
+                $configsFromCache = \think\facade\Cache::get('system_configs');
+                if ($configsFromCache) {
+                    $configs = $configsFromCache;
+                } else {
+                    $configList = \app\model\Config::select();
+                    foreach ($configList as $config) {
+                        $configs[$config->key] = $config->value;
+                    }
+                    \think\facade\Cache::set('system_configs', $configs, 3600);
                 }
-                \think\facade\Cache::set('system_configs', $configs, 3600);
+            } catch (\Exception $e) {
+                try {
+                    $configList = \app\model\Config::select();
+                    foreach ($configList as $config) {
+                        $configs[$config->key] = $config->value;
+                    }
+                } catch (\Exception $ex) {
+                    $configs = [];
+                }
             }
         }
         
