@@ -1,0 +1,200 @@
+{include file="admin/layout/header" /}
+{block name="page_title"}用户管理{/block}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" name="keyword" placeholder="搜索用户名/昵称/手机号" value="{$keyword}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="status">
+                    <option value="-1" {if $status == -1}selected{/if}>全部状态</option>
+                    <option value="1" {if $status == 1}selected{/if}>正常</option>
+                    <option value="0" {if $status == 0}selected{/if}>禁用</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> 搜索
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {if $users->total() > 0}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户</th>
+                        <th>手机号/邮箱</th>
+                        <th>资料完善</th>
+                        <th>收益</th>
+                        <th>状态</th>
+                        <th>注册时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="users" id="user"}
+                    <tr>
+                        <td>{$user.id}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2" style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.875rem; font-weight: 600;">
+                                    {$user.nickname|mb_substr=0,1|strtoupper}
+                                </div>
+                                <div>
+                                    <div>{$user.nickname}</div>
+                                    <div class="text-muted small">@{$user.username}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>{$user.phone|default='--'}</div>
+                            <div class="text-muted small">{$user.email|default='--'}</div>
+                        </td>
+                        <td>
+                            {if $user.education_status && $user.work_status}
+                            <span class="badge badge-success">已完善</span>
+                            {elseif $user.education_status || $user.work_status}
+                            <span class="badge badge-warning">部分完善</span>
+                            {else}
+                            <span class="badge badge-secondary">未完善</span>
+                            {/if}
+                        </td>
+                        <td>
+                            <div class="text-success fw-bold">¥{$user.balance|default=0}</div>
+                            <div class="text-muted small">待入账: ¥{$user.pending_balance|default=0}</div>
+                        </td>
+                        <td>
+                            {if $user.status == 1}
+                            <span class="badge badge-success">正常</span>
+                            {else}
+                            <span class="badge badge-danger">禁用</span>
+                            {/if}
+                        </td>
+                        <td class="text-muted small">
+                            {$user.create_time|format_date}
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <a href="/admin/user/detail?id={$user.id}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <button class="btn btn-sm btn-outline-warning" onclick="resetPassword({$user.id})">
+                                    <i class="bi bi-key"></i>
+                                </button>
+                                {if $user.status == 1}
+                                <button class="btn btn-sm btn-outline-danger" onclick="updateStatus({$user.id}, 0)">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                                {else}
+                                <button class="btn btn-sm btn-outline-success" onclick="updateStatus({$user.id}, 1)">
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                                {/if}
+                            </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+        </div>
+
+        {if $users->lastPage() > 1}
+        <div class="p-4">
+            {$users->render()|raw}
+        </div>
+        {/if}
+        {else}
+        <div class="empty-state py-5">
+            <i class="bi bi-people"></i>
+            <h4>暂无用户</h4>
+            <p>没有找到符合条件的用户</p>
+        </div>
+        {/if}
+    </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">重置密码</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="resetPasswordForm">
+                <input type="hidden" name="id" id="resetPasswordUserId">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">新密码</label>
+                        <input type="password" class="form-control" name="password" placeholder="请输入新密码（至少6位）" required minlength="6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确认重置</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetPassword(userId) {
+    document.getElementById('resetPasswordUserId').value = userId;
+    const modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+    modal.show();
+}
+
+document.getElementById('resetPasswordForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    axios.post('/admin/user/reset-password', formData)
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();
+            } else {
+                showToast(response.data.msg, 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('操作失败，请重试', 'error');
+        });
+});
+
+function updateStatus(userId, status) {
+    const message = status == 1 ? '确定要启用该用户吗？' : '确定要禁用该用户吗？';
+    
+    if (confirm(message)) {
+        axios.post('/admin/user/update-status', { id: userId, status: status })
+            .then(function(response) {
+                if (response.data.code === 1) {
+                    showToast(response.data.msg, 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    showToast(response.data.msg, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('操作失败，请重试', 'error');
+            });
+    }
+}
+</script>
+
+{include file="admin/layout/footer" /}

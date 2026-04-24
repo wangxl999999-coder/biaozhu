@@ -1,0 +1,148 @@
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="footer-title">
+                        <i class="bi bi-grid-3x3-gap-fill"></i> 数据标注平台
+                    </h5>
+                    <p>专业的数据标注任务发布平台，连接企业与标注者，提供高效、精准的数据标注服务。</p>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-title">快速链接</h5>
+                    <div class="footer-links">
+                        <a href="/">首页</a>
+                        <a href="/task">任务广场</a>
+                        <a href="/faq">常见问题</a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-title">帮助中心</h5>
+                    <div class="footer-links">
+                        <a href="/faq">新手入门</a>
+                        <a href="/faq">任务相关</a>
+                        <a href="/faq">收益结算</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="footer-title">联系我们</h5>
+                    <p>
+                        <i class="bi bi-envelope"></i> support@biaozhu.com<br>
+                        <i class="bi bi-telephone"></i> 400-123-4567<br>
+                        <i class="bi bi-clock"></i> 工作日 9:00-18:00
+                    </p>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3" style="border-color: #334155;">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2024 数据标注平台 All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toastId = 'toast_' + Date.now();
+            
+            const toastClass = type === 'success' ? 'toast-success' : 
+                               type === 'error' ? 'toast-error' : 
+                               'toast-warning';
+            
+            const iconClass = type === 'success' ? 'bi-check-circle-fill text-success' : 
+                             type === 'error' ? 'bi-x-circle-fill text-danger' : 
+                             'bi-exclamation-triangle-fill text-warning';
+            
+            const toastHtml = `
+                <div class="toast ${toastClass}" id="${toastId}" role="alert">
+                    <div class="toast-body d-flex align-items-center">
+                        <i class="bi ${iconClass} me-2 fs-5"></i>
+                        <span>${message}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', toastHtml);
+            
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            toast.show();
+            
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+        }
+
+        function showModal(title, content, buttons = []) {
+            const modalId = 'modal_' + Date.now();
+            
+            let buttonsHtml = buttons.map(btn => `
+                <button type="button" class="btn ${btn.class || 'btn-secondary'}" data-bs-dismiss="modal">
+                    ${btn.text}
+                </button>
+            `).join('');
+            
+            if (buttons.length === 0) {
+                buttonsHtml = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>';
+            }
+            
+            const modalHtml = `
+                <div class="modal fade" id="${modalId}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${title}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ${content}
+                            </div>
+                            <div class="modal-footer">
+                                ${buttonsHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            const modalElement = document.getElementById(modalId);
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                modalElement.remove();
+            });
+            
+            return modalElement;
+        }
+
+        function formatMoney(amount) {
+            return '¥' + parseFloat(amount).toFixed(2);
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hour = String(date.getHours()).padStart(2, '0');
+            const minute = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hour}:${minute}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        });
+    </script>
+</body>
+</html>

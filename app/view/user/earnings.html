@@ -1,0 +1,145 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">收益明细</h1>
+                <p class="mb-0 mt-2" style="opacity: 0.9;">查看您的收入记录和待入账收益</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <i class="bi bi-wallet2 text-primary" style="font-size: 2rem;"></i>
+                <div class="stats-value">¥{$user.balance|default=0}</div>
+                <div class="stats-label">累计收益</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <i class="bi bi-clock-history text-warning" style="font-size: 2rem;"></i>
+                <div class="stats-value">¥{$user.pending_balance|default=0}</div>
+                <div class="stats-label">待入账</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+                <div class="stats-value">¥{$user.balance|default=0}</div>
+                <div class="stats-label">已入账</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+                <i class="bi bi-list-ul"></i> 收益记录
+            </h6>
+            <div>
+                <a href="{$Request.url()|raw}?type=all" class="btn btn-sm {$type == 'all' ? 'btn-primary' : 'btn-outline-primary'}">全部</a>
+                <a href="{$Request.url()|raw}?type=pending" class="btn btn-sm {$type == 'pending' ? 'btn-primary' : 'btn-outline-primary'}">待入账</a>
+                <a href="{$Request.url()|raw}?type=settled" class="btn btn-sm {$type == 'settled' ? 'btn-primary' : 'btn-outline-primary'}">已入账</a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {if $earnings->total() > 0}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>时间</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                            <th class="text-end">金额</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="earnings" id="item"}
+                        <tr>
+                            <td>
+                                {$item.create_time|format_date}
+                            </td>
+                            <td>
+                                {if $item.type == 1}
+                                <span class="badge badge-primary">任务收益</span>
+                                {elseif $item.type == 2}
+                                <span class="badge badge-success">推荐奖励</span>
+                                {else}
+                                <span class="badge badge-warning">其他</span>
+                                {/if}
+                            </td>
+                            <td>
+                                {$item.description|default='--'}
+                            </td>
+                            <td class="text-end">
+                                <span class="text-success fw-bold">+¥{$item.amount}</span>
+                            </td>
+                            <td>
+                                {if $item.status == 0}
+                                <span class="badge badge-warning">待入账</span>
+                                {else}
+                                <span class="badge badge-success">已入账</span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+            {if $earnings->lastPage() > 1}
+            <div class="d-flex justify-content-center p-4">
+                {$earnings->render()|raw}
+            </div>
+            {/if}
+            {else}
+            <div class="empty-state py-5">
+                <i class="bi bi-wallet2"></i>
+                <h4>暂无收益记录</h4>
+                <p>您还没有收益记录，快去完成任务吧！</p>
+                <a href="/task" class="btn btn-primary mt-3">
+                    <i class="bi bi-briefcase"></i> 浏览任务
+                </a>
+            </div>
+            {/if}
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6 class="mb-0">
+                <i class="bi bi-question-circle"></i> 收益说明
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="text-primary"><i class="bi bi-clock-history"></i> 结算周期</h6>
+                        <p class="text-muted mb-0">每月15日统一结算上月通过审核的任务收益，结算后收益将从"待入账"转为"已入账"。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="text-success"><i class="bi bi-check-circle"></i> 收益类型</h6>
+                        <p class="text-muted mb-0">
+                            <span class="badge badge-primary me-1">任务收益</span>
+                            完成任务获得的收益<br>
+                            <span class="badge badge-success me-1">推荐奖励</span>
+                            推荐他人完成任务获得的奖励
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="layout/footer" /}

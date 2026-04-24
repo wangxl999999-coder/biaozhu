@@ -1,0 +1,165 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">我参与的任务</h1>
+                <p class="mb-0 mt-2" style="opacity: 0.9;">查看您申请的所有任务及进度</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-body">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link {$currentStatus == 'all' ? 'active' : ''}" href="{$Request.url()|raw}?status=all">
+                        全部任务
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {$currentStatus == 'pending_submit' ? 'active' : ''}" href="{$Request.url()|raw}?status=pending_submit">
+                        <span class="badge badge-primary">待提交</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {$currentStatus == 'pending_audit' ? 'active' : ''}" href="{$Request.url()|raw}?status=pending_audit">
+                        <span class="badge badge-warning">待审核</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {$currentStatus == 'passed' ? 'active' : ''}" href="{$Request.url()|raw}?status=passed">
+                        <span class="badge badge-success">通过审核</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {$currentStatus == 'rejected' ? 'active' : ''}" href="{$Request.url()|raw}?status=rejected">
+                        <span class="badge badge-danger">已拒绝</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    {if $userTasks->total() > 0}
+    <div class="row">
+        {volist name="userTasks" id="item"}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="mb-1">
+                                <a href="/task/detail?id={$item.task.id}" class="text-decoration-none">{$item.task.title}</a>
+                            </h5>
+                            <div class="text-muted small">
+                                <i class="bi bi-clock"></i> 申请时间：{$item.create_time|format_date}
+                            </div>
+                        </div>
+                        <span class="badge badge-{$statusClass[$item.status]}">
+                            {$statusText[$item.status]}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <i class="bi bi-cash-coin text-success"></i> 
+                            任务价格：<span class="text-success fw-bold">¥{$item.task.price}</span>
+                        </div>
+                        {if $item.earnings > 0}
+                        <div class="text-success">
+                            <i class="bi bi-check-circle"></i> 收益：+¥{$item.earnings}
+                        </div>
+                        {/if}
+                    </div>
+
+                    {if $item.audit_remark && $item.status == 4}
+                    <div class="alert alert-danger mt-3 mb-0 py-2 px-3 small">
+                        <i class="bi bi-exclamation-triangle"></i> 审核备注：{$item.audit_remark}
+                    </div>
+                    {/if}
+                </div>
+                <div class="card-footer bg-transparent d-flex justify-content-between">
+                    <a href="/task/detail?id={$item.task.id}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i> 查看详情
+                    </a>
+                    {if $item.status == 1}
+                    <button class="btn btn-success btn-sm submitTaskBtn" data-task-id="{$item.task_id}">
+                        <i class="bi bi-check-circle"></i> 提交任务
+                    </button>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+
+    {if $userTasks->lastPage() > 1}
+    <div class="d-flex justify-content-center">
+        {$userTasks->render()|raw}
+    </div>
+    {/if}
+    {else}
+    <div class="card">
+        <div class="card-body">
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h4>暂无任务记录</h4>
+                <p>
+                    {if $currentStatus == 'all'}
+                    您还没有申请任何任务，快去任务广场看看吧！
+                    {elseif $currentStatus == 'pending_submit'}
+                    您没有待提交的任务
+                    {elseif $currentStatus == 'pending_audit'}
+                    您没有待审核的任务
+                    {elseif $currentStatus == 'passed'}
+                    您没有已通过审核的任务
+                    {elseif $currentStatus == 'rejected'}
+                    您没有被拒绝的任务
+                    {/if}
+                </p>
+                <div class="mt-3">
+                    {if $currentStatus != 'all'}
+                    <a href="{$Request.url()|raw}?status=all" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-list-ul"></i> 查看全部
+                    </a>
+                    {/if}
+                    <a href="/task" class="btn btn-primary">
+                        <i class="bi bi-briefcase"></i> 浏览任务
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {/if}
+</div>
+
+<script>
+document.querySelectorAll('.submitTaskBtn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const taskId = this.dataset.taskId;
+        
+        if (confirm('确定要提交任务吗？提交后将进入审核状态。')) {
+            axios.post('/task/submit', { task_id: taskId })
+                .then(function(response) {
+                    if (response.data.code === 1) {
+                        showToast(response.data.msg, 'success');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showToast(response.data.msg, 'error');
+                    }
+                })
+                .catch(function(error) {
+                    showToast('提交失败，请重试', 'error');
+                });
+        }
+    });
+});
+</script>
+
+{include file="layout/footer" /}

@@ -1,0 +1,147 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">任务广场</h1>
+                <p class="mb-0 mt-2" style="opacity: 0.9;">浏览所有可用任务，选择适合您的任务开始工作</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-funnel"></i> 筛选条件
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form id="filterForm" method="get">
+                        <div class="mb-3">
+                            <label class="form-label">搜索任务</label>
+                            <div class="search-box">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control" name="keyword" placeholder="输入任务名称..." value="{$keyword}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">任务分类</label>
+                            <select class="form-select" name="category_id">
+                                <option value="0">全部分类</option>
+                                {volist name="categories" id="cat"}
+                                <option value="{$cat.id}" {if $categoryId == $cat.id}selected{/if}>{$cat.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">排序方式</label>
+                            <select class="form-select" name="sort">
+                                <option value="new" {if $sort == 'new'}selected{/if}>最新发布</option>
+                                <option value="hot" {if $sort == 'hot'}selected{/if}>热度最高</option>
+                                <option value="price" {if $sort == 'price'}selected{/if}>价格最高</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> 搜索
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb"></i> 小贴士
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            完善个人信息可提高申请通过率
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            关注高价格任务，收益更高
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            及时提交任务，避免超时
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <span class="text-muted">共找到 <strong>{$tasks->total()}</strong> 个任务</span>
+                    <span class="ms-3 text-muted">当前排序：<strong>{$sortText[$sort]}</strong></span>
+                </div>
+                <div class="btn-group">
+                    <a href="{$Request.url()|raw}?sort=new{$keyword ? '&keyword=' . $keyword : ''}{$categoryId ? '&category_id=' . $categoryId : ''}" class="btn {if $sort == 'new'}btn-primary{else}btn-outline-primary{/if}">最新</a>
+                    <a href="{$Request.url()|raw}?sort=hot{$keyword ? '&keyword=' . $keyword : ''}{$categoryId ? '&category_id=' . $categoryId : ''}" class="btn {if $sort == 'hot'}btn-primary{else}btn-outline-primary{/if}">热度</a>
+                    <a href="{$Request.url()|raw}?sort=price{$keyword ? '&keyword=' . $keyword : ''}{$categoryId ? '&category_id=' . $categoryId : ''}" class="btn {if $sort == 'price'}btn-primary{else}btn-outline-primary{/if}">价格</a>
+                </div>
+            </div>
+
+            {if $tasks->total() > 0}
+            <div class="row">
+                {volist name="tasks" id="task"}
+                <div class="col-md-6 mb-4">
+                    <div class="card task-card h-100" onclick="location.href='/task/detail?id={$task.id}'">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="task-title mb-0">{$task.title}</h5>
+                                <span class="price-badge">¥{$task.price}</span>
+                            </div>
+                            
+                            <p class="task-meta mb-3">
+                                <i class="bi bi-people"></i> 已申请 {$task.applied_count}{if $task.total_count > 0}/{$task.total_count}{/if} 人
+                                <span class="ms-3">
+                                    <i class="bi bi-eye"></i> {$task.view_count}
+                                </span>
+                            </p>
+
+                            {if $task.tags}
+                            <div class="task-tags">
+                                {volist name="task.tag_list" id="tag"}
+                                <span class="tag">{$tag}</span>
+                                {/volist}
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                {$tasks->render()|raw}
+            </div>
+            {else}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h4>暂无任务</h4>
+                <p>没有找到符合条件的任务，请尝试调整筛选条件</p>
+                <a href="/task" class="btn btn-primary mt-3">
+                    <i class="bi bi-arrow-counterclockwise"></i> 清除筛选
+                </a>
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+{include file="layout/footer" /}

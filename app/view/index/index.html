@@ -1,0 +1,156 @@
+{include file="layout/header" /}
+
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="hero-title">专业的数据标注平台</h1>
+                <p class="hero-subtitle">连接企业与标注者，提供高效、精准的数据标注服务。完成任务，获取收益，助力AI发展。</p>
+                <div>
+                    {if !isset($user)}
+                        <a href="/register" class="btn btn-light me-3">
+                            <i class="bi bi-person-plus"></i> 立即注册
+                        </a>
+                        <a href="/task" class="btn btn-outline-light">
+                            <i class="bi bi-briefcase"></i> 浏览任务
+                        </a>
+                    {else}
+                        <a href="/task" class="btn btn-light me-3">
+                            <i class="bi bi-briefcase"></i> 浏览任务
+                        </a>
+                        <a href="/user/my-tasks" class="btn btn-outline-light">
+                            <i class="bi bi-list-check"></i> 我的任务
+                        </a>
+                    {/if}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-grid-3x3-gap-fill" style="font-size: 12rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="bi bi-fire text-warning"></i> 热门任务
+                </h3>
+                <a href="/task?sort=hot" class="text-decoration-none">
+                    查看更多 <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        {volist name="hotTasks" id="task"}
+        <div class="col-md-4 mb-4">
+            <div class="card task-card h-100" onclick="location.href='/task/detail?id={$task.id}'">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="task-title mb-0">{$task.title}</h5>
+                        <span class="price-badge">¥{$task.price}</span>
+                    </div>
+                    <p class="task-meta mb-3">
+                        <i class="bi bi-people"></i> 已申请 {$task.applied_count}{if $task.total_count > 0}/{$task.total_count}{/if} 人
+                        <span class="ms-3">
+                            <i class="bi bi-eye"></i> {$task.view_count}
+                        </span>
+                    </p>
+                    {if $task.tags}
+                    <div class="task-tags">
+                        {volist name="task.tag_list" id="tag"}
+                        <span class="tag">{$tag}</span>
+                        {/volist}
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+
+    {if $newTasks}
+    <div class="row mb-4 mt-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="bi bi-clock-history text-primary"></i> 最新任务
+                </h3>
+                <a href="/task?sort=new" class="text-decoration-none">
+                    查看更多 <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        {volist name="newTasks" id="task"}
+        <div class="col-md-4 mb-4">
+            <div class="card task-card h-100" onclick="location.href='/task/detail?id={$task.id}'">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="task-title mb-0">{$task.title}</h5>
+                        <span class="price-badge">¥{$task.price}</span>
+                    </div>
+                    <p class="task-meta mb-3">
+                        <i class="bi bi-people"></i> 已申请 {$task.applied_count}{if $task.total_count > 0}/{$task.total_count}{/if} 人
+                        <span class="ms-3">
+                            <i class="bi bi-eye"></i> {$task.view_count}
+                        </span>
+                    </p>
+                    {if $task.tags}
+                    <div class="task-tags">
+                        {volist name="task.tag_list" id="tag"}
+                        <span class="tag">{$tag}</span>
+                        {/volist}
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+    {/if}
+
+    <div class="row mt-5 mb-3">
+        <div class="col-12">
+            <h3 class="text-center mb-4">为什么选择我们？</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-cash-coin text-success" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 mb-2">收益透明</h5>
+                    <p class="text-muted">任务价格公开透明，收益实时可查，每月按时结算。</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 mb-2">安全可靠</h5>
+                    <p class="text-muted">企业资质审核，任务信息真实，保障标注者权益。</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-graph-up-arrow text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3 mb-2">任务丰富</h5>
+                    <p class="text-muted">多种类型任务，图像、语音、文本标注，总有适合你的。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="layout/footer" /}
