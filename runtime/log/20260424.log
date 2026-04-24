@@ -1,0 +1,33 @@
+[2026-04-24T19:25:45+08:00][error] [10501]SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)[D:\my\tare-git\biaozhu\vendor\topthink\think-orm\src\db\PDOConnection.php:797]
+[2026-04-24T19:28:31+08:00][sql] CONNECT:[ UseTime:0.005906s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:28:31+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.014105s ]
+[2026-04-24T19:28:31+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000562s ]
+[2026-04-24T19:28:31+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000709s ]
+[2026-04-24T19:28:39+08:00][sql] CONNECT:[ UseTime:0.006911s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:28:39+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.015033s ]
+[2026-04-24T19:28:39+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000363s ]
+[2026-04-24T19:28:39+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000369s ]
+[2026-04-24T19:28:44+08:00][sql] CONNECT:[ UseTime:0.005119s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:28:44+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.017795s ]
+[2026-04-24T19:28:44+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000501s ]
+[2026-04-24T19:28:44+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000442s ]
+[2026-04-24T19:28:52+08:00][sql] CONNECT:[ UseTime:0.015702s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:28:52+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.014579s ]
+[2026-04-24T19:28:52+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000490s ]
+[2026-04-24T19:28:52+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000365s ]
+[2026-04-24T19:29:03+08:00][sql] CONNECT:[ UseTime:0.001987s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:29:03+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.013452s ]
+[2026-04-24T19:29:03+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000280s ]
+[2026-04-24T19:29:03+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000187s ]
+[2026-04-24T19:29:08+08:00][sql] CONNECT:[ UseTime:0.015029s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:29:08+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.014277s ]
+[2026-04-24T19:29:08+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000440s ]
+[2026-04-24T19:29:08+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000355s ]
+[2026-04-24T19:29:10+08:00][sql] CONNECT:[ UseTime:0.001734s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:29:10+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.018601s ]
+[2026-04-24T19:29:10+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000345s ]
+[2026-04-24T19:29:10+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000397s ]
+[2026-04-24T19:30:26+08:00][sql] CONNECT:[ UseTime:0.002004s ] mysql:host=127.0.0.1;port=3306;dbname=biaozhu;charset=utf8mb4
+[2026-04-24T19:30:26+08:00][sql] SHOW FULL COLUMNS FROM `bz_tasks` [ RunTime:0.013022s ]
+[2026-04-24T19:30:26+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `view_count` DESC LIMIT 6 [ RunTime:0.000253s ]
+[2026-04-24T19:30:26+08:00][sql] SELECT * FROM `bz_tasks` WHERE  `status` = 1 ORDER BY `create_time` DESC LIMIT 6 [ RunTime:0.000162s ]

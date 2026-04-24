@@ -1,69 +1,55 @@
 <?php
 use think\facade\Route;
 
-Route::get('/', 'index/index');
-Route::get('login', 'index/login');
-Route::post('login', 'index/login');
-Route::get('register', 'index/register');
-Route::post('register', 'index/register');
-Route::get('logout', 'index/logout');
-Route::get('faq', 'index/faq');
+Route::get('/', 'Index/index');
+Route::get('login', 'Index/login');
+Route::post('login', 'Index/login');
+Route::get('register', 'Index/register');
+Route::post('register', 'Index/register');
+Route::get('logout', 'Index/logout');
+Route::get('faq', 'Index/faq');
 
-Route::group('task', function () {
-    Route::get('/', 'task/index');
-    Route::get('detail', 'task/detail');
-    Route::post('apply', 'task/apply');
-    Route::post('submit', 'task/submit');
-    Route::post('comment', 'task/comment');
-});
+Route::get('task', 'Task/index');
+Route::get('task/detail', 'Task/detail');
+Route::post('task/apply', 'Task/apply');
+Route::post('task/submit', 'Task/submit');
+Route::post('task/comment', 'Task/comment');
 
-Route::group('user', function () {
-    Route::get('profile', 'user/profile');
-    Route::post('save-education', 'user/saveEducation');
-    Route::post('save-work', 'user/saveWork');
-    Route::get('center', 'user/center');
-    Route::get('earnings', 'user/earnings');
-    Route::get('my-tasks', 'user/myTasks');
-});
+Route::get('user/profile', 'User/profile');
+Route::post('user/save-education', 'User/saveEducation');
+Route::post('user/save-work', 'User/saveWork');
+Route::get('user/center', 'User/center');
+Route::get('user/earnings', 'User/earnings');
+Route::get('user/my-tasks', 'User/myTasks');
 
-Route::group('admin', function () {
-    Route::get('/', 'admin.index/index');
-    Route::get('login', 'admin.index/login');
-    Route::post('login', 'admin.index/login');
-    Route::get('logout', 'admin.index/logout');
+Route::get('admin', 'admin\Index/index');
+Route::get('admin/login', 'admin\Index/login');
+Route::post('admin/login', 'admin\Index/login');
+Route::get('admin/logout', 'admin\Index/logout');
 
-    Route::group('user', function () {
-        Route::get('/', 'admin.user/index');
-        Route::get('detail', 'admin.user/detail');
-        Route::post('update-status', 'admin.user/updateStatus');
-        Route::post('reset-password', 'admin.user/resetPassword');
-    });
+Route::get('admin/user', 'admin\User/index');
+Route::get('admin/user/detail', 'admin\User/detail');
+Route::post('admin/user/update-status', 'admin\User/updateStatus');
+Route::post('admin/user/reset-password', 'admin\User\resetPassword');
 
-    Route::group('task', function () {
-        Route::get('/', 'admin.task/index');
-        Route::get('add', 'admin.task/add');
-        Route::post('add', 'admin.task/add');
-        Route::get('edit', 'admin.task/edit');
-        Route::post('edit', 'admin.task/edit');
-        Route::get('detail', 'admin.task/detail');
-        Route::post('audit', 'admin.task/audit');
-        Route::get('categories', 'admin.task/categories');
-        Route::post('save-category', 'admin.task/saveCategory');
-    });
+Route::get('admin/task', 'admin\Task/index');
+Route::get('admin/task/add', 'admin\Task/add');
+Route::post('admin/task/add', 'admin\Task/add');
+Route::get('admin/task/edit', 'admin\Task/edit');
+Route::post('admin/task/edit', 'admin\Task/edit');
+Route::get('admin/task/detail', 'admin\Task/detail');
+Route::post('admin/task/audit', 'admin\Task/audit');
+Route::get('admin/task/categories', 'admin\Task/categories');
+Route::post('admin/task/save-category', 'admin\Task/saveCategory');
 
-    Route::group('faq', function () {
-        Route::get('/', 'admin.faq/index');
-        Route::get('add', 'admin.faq/add');
-        Route::post('add', 'admin.faq/add');
-        Route::get('edit', 'admin.faq/edit');
-        Route::post('edit', 'admin.faq/edit');
-        Route::post('delete', 'admin.faq/delete');
-        Route::get('categories', 'admin.faq/categories');
-        Route::post('save-category', 'admin.faq/saveCategory');
-    });
+Route::get('admin/faq', 'admin\Faq/index');
+Route::get('admin/faq/add', 'admin\Faq/add');
+Route::post('admin/faq/add', 'admin\Faq/add');
+Route::get('admin/faq/edit', 'admin\Faq/edit');
+Route::post('admin/faq/edit', 'admin\Faq/edit');
+Route::post('admin/faq/delete', 'admin\Faq/delete');
+Route::get('admin/faq/categories', 'admin\Faq/categories');
+Route::post('admin/faq/save-category', 'admin\Faq/saveCategory');
 
-    Route::group('config', function () {
-        Route::get('/', 'admin.config/index');
-        Route::post('/', 'admin.config/index');
-    });
-});
+Route::get('admin/config', 'admin\Config/index');
+Route::post('admin/config', 'admin\Config/index');
