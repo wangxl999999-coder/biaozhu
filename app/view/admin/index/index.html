@@ -1,0 +1,176 @@
+{include file="admin/layout/header" /}
+{block name="page_title"}控制台{/block}
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-people fs-3"></i>
+            </div>
+            <div class="stat-value">{$userCount}</div>
+            <div class="stat-label">注册用户</div>
+            <div class="text-success small mt-2">
+                <i class="bi bi-arrow-up"></i> 今日新增 {$todayUserCount}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="stat-icon success">
+                <i class="bi bi-briefcase fs-3"></i>
+            </div>
+            <div class="stat-value">{$taskCount}</div>
+            <div class="stat-label">任务总数</div>
+            <div class="text-primary small mt-2">
+                进行中 {$activeTaskCount}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="stat-icon warning">
+                <i class="bi bi-cash-coin fs-3"></i>
+            </div>
+            <div class="stat-value">¥{$earningsTotal|default=0}</div>
+            <div class="stat-label">平台总收益</div>
+            <div class="text-success small mt-2">
+                <i class="bi bi-arrow-up"></i> 今日 ¥{$todayEarnings|default=0}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-plus-circle fs-3"></i>
+            </div>
+            <div class="stat-value">{$todayTaskCount}</div>
+            <div class="stat-label">今日新增任务</div>
+            <div class="text-muted small mt-2">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-clock-history text-primary"></i> 最近任务
+                </h6>
+                <a href="/admin/task" class="text-decoration-none small">
+                    查看全部 <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {if count($recentTasks) > 0}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>任务名称</th>
+                                <th>价格</th>
+                                <th>申请人数</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="recentTasks" id="task"}
+                            <tr>
+                                <td>
+                                    <a href="/admin/task/detail?id={$task.id}" class="text-decoration-none">
+                                        {$task.title|mb_substr=0,15}
+                                    </a>
+                                </td>
+                                <td class="text-success fw-bold">¥{$task.price}</td>
+                                <td>{$task.applied_count}</td>
+                                <td>
+                                    {if $task.status == 1}
+                                    <span class="badge badge-success">招募中</span>
+                                    {elseif $task.status == 2}
+                                    <span class="badge badge-primary">进行中</span>
+                                    {else}
+                                    <span class="badge badge-secondary">已结束</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                {else}
+                <div class="empty-state py-4">
+                    <i class="bi bi-inbox"></i>
+                    <h4 class="mt-2 mb-1">暂无任务</h4>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-people text-success"></i> 最近注册用户
+                </h6>
+                <a href="/admin/user" class="text-decoration-none small">
+                    查看全部 <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {if count($recentUsers) > 0}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>用户</th>
+                                <th>注册时间</th>
+                                <th>资料</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="recentUsers" id="user"}
+                            <tr>
+                                <td>
+                                    <a href="/admin/user/detail?id={$user.id}" class="text-decoration-none d-flex align-items-center">
+                                        <div class="me-2" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem; font-weight: 600;">
+                                            {$user.nickname|mb_substr=0,1|strtoupper}
+                                        </div>
+                                        {$user.nickname}
+                                    </a>
+                                </td>
+                                <td class="text-muted small">{$user.create_time|format_date}</td>
+                                <td>
+                                    {if $user.education_status && $user.work_status}
+                                    <span class="badge badge-success">已完善</span>
+                                    {else}
+                                    <span class="badge badge-warning">未完善</span>
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $user.status == 1}
+                                    <span class="badge badge-success">正常</span>
+                                    {else}
+                                    <span class="badge badge-danger">禁用</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                {else}
+                <div class="empty-state py-4">
+                    <i class="bi bi-people"></i>
+                    <h4 class="mt-2 mb-1">暂无用户</h4>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="admin/layout/footer" /}

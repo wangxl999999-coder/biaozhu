@@ -1,0 +1,127 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">用户注册</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-person-plus" style="font-size: 3rem; color: var(--primary-color);"></i>
+                        <h4 class="mt-3">创建新账号</h4>
+                        <p class="text-muted">加入我们，开始数据标注之旅</p>
+                    </div>
+
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label class="form-label">用户名 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input type="text" class="form-control" name="username" placeholder="请输入用户名（4-20位）" required minlength="4" maxlength="20">
+                            </div>
+                            <div class="form-text">用户名由4-20位字母、数字或下划线组成</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">昵称</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-badge"></i>
+                                </span>
+                                <input type="text" class="form-control" name="nickname" placeholder="请输入昵称（选填）">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">密码 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" placeholder="请输入密码（至少6位）" required minlength="6">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">确认密码 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                <input type="password" class="form-control" name="confirm_password" placeholder="请再次输入密码" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    我已阅读并同意 <a href="#" class="text-decoration-none">用户协议</a> 和 <a href="#" class="text-decoration-none">隐私政策</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> 注册
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr>
+
+                    <div class="text-center">
+                        <p class="text-muted mb-0">已有账号？</p>
+                        <a href="/login" class="text-decoration-none">
+                            立即登录 <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const password = this.querySelector('input[name="password"]').value;
+    const confirmPassword = this.querySelector('input[name="confirm_password"]').value;
+    
+    if (password !== confirmPassword) {
+        showToast('两次输入的密码不一致', 'error');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    
+    axios.post('/register', formData)
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                setTimeout(function() {
+                    window.location.href = response.data.data.redirect || '/';
+                }, 1000);
+            } else {
+                showToast(response.data.msg, 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('注册失败，请重试', 'error');
+        });
+});
+</script>
+
+{include file="layout/footer" /}

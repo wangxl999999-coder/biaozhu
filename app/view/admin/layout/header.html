@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 数据标注平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #6366f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 1.5rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sidebar-logo a {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-logo i {
+            margin-right: 0.5rem;
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .sidebar-menu .menu-item {
+            list-style: none;
+        }
+
+        .sidebar-menu .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu .menu-link:hover,
+        .sidebar-menu .menu-link.active {
+            color: #fff;
+            background-color: rgba(99, 102, 241, 0.1);
+            border-left: 3px solid var(--sidebar-active);
+        }
+
+        .sidebar-menu .menu-link i {
+            margin-right: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .sidebar-menu .menu-title {
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background-color: #fff;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-navbar .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .top-navbar .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-navbar .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+
+        .page-content {
+            padding: 1.5rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem 0.75rem 0 0 !important;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-card .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-card .stat-icon.primary {
+            background-color: #eef2ff;
+            color: var(--primary-color);
+        }
+
+        .stat-card .stat-icon.success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .stat-card .stat-icon.warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .stat-card .stat-icon.danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+
+        .badge-primary {
+            background-color: #eef2ff;
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            border-radius: 0.5rem;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .toast-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .pagination {
+            justify-content: center;
+        }
+
+        .pagination .page-link {
+            border-radius: 0.5rem;
+            margin: 0 0.25rem;
+            border: none;
+            color: #64748b;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-box .form-control {
+            padding-left: 2.5rem;
+        }
+
+        .action-btns .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            margin-right: 0.25rem;
+        }
+
+        .modal-content {
+            border-radius: 0.75rem;
+            border: none;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 1.25rem;
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem 1.25rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h4 {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #94a3b8;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            margin-bottom: -2px;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            background-color: transparent;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <a href="/admin">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                数据标注平台
+            </a>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-title">主菜单</li>
+            <li class="menu-item">
+                <a href="/admin" class="menu-link {if $Request.pathinfo() == 'admin' || $Request.pathinfo() == 'admin/'}active{/if}">
+                    <i class="bi bi-speedometer2"></i>
+                    控制台
+                </a>
+            </li>
+
+            <li class="menu-title">用户管理</li>
+            <li class="menu-item">
+                <a href="/admin/user" class="menu-link {if strpos($Request.pathinfo(), 'admin/user') !== false}active{/if}">
+                    <i class="bi bi-people"></i>
+                    用户列表
+                </a>
+            </li>
+
+            <li class="menu-title">任务管理</li>
+            <li class="menu-item">
+                <a href="/admin/task" class="menu-link {if strpos($Request.pathinfo(), 'admin/task') !== false && strpos($Request.pathinfo(), 'categories') === false}active{/if}">
+                    <i class="bi bi-briefcase"></i>
+                    任务列表
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/admin/task/categories" class="menu-link {if strpos($Request.pathinfo(), 'admin/task/categories') !== false}active{/if}">
+                    <i class="bi bi-tags"></i>
+                    任务分类
+                </a>
+            </li>
+
+            <li class="menu-title">内容管理</li>
+            <li class="menu-item">
+                <a href="/admin/faq" class="menu-link {if strpos($Request.pathinfo(), 'admin/faq') !== false && strpos($Request.pathinfo(), 'categories') === false}active{/if}">
+                    <i class="bi bi-question-circle"></i>
+                    FAQ管理
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/admin/faq/categories" class="menu-link {if strpos($Request.pathinfo(), 'admin/faq/categories') !== false}active{/if}">
+                    <i class="bi bi-bookmark"></i>
+                    FAQ分类
+                </a>
+            </li>
+
+            <li class="menu-title">系统设置</li>
+            <li class="menu-item">
+                <a href="/admin/config" class="menu-link {if strpos($Request.pathinfo(), 'admin/config') !== false}active{/if}">
+                    <i class="bi bi-gear"></i>
+                    系统配置
+                </a>
+            </li>
+
+            <li class="menu-title">快捷链接</li>
+            <li class="menu-item">
+                <a href="/" target="_blank" class="menu-link">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    前台首页
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/admin/logout" class="menu-link">
+                    <i class="bi bi-box-arrow-right"></i>
+                    退出登录
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <nav class="top-navbar">
+            <div class="page-title">
+                {block name="page_title"}控制台{/block}
+            </div>
+            <div class="user-info">
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown">
+                        <div class="user-avatar">
+                            {$admin.nickname|default='管'|mb_substr=0,1|strtoupper}
+                        </div>
+                        <span class="text-dark">{$admin.nickname|default='管理员'}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="/" target="_blank"><i class="bi bi-house-door me-2"></i>访问前台</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/admin/logout"><i class="bi bi-box-arrow-right me-2"></i>退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="page-content">

@@ -1,0 +1,338 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav style="--bs-breadcrumb-divider: '>';" class="mb-3">
+                    <ol class="breadcrumb mb-0" style="--bs-breadcrumb-divider: '>';">
+                        <li class="breadcrumb-item"><a href="/" class="text-white text-decoration-none">首页</a></li>
+                        <li class="breadcrumb-item"><a href="/task" class="text-white text-decoration-none">任务广场</a></li>
+                        <li class="breadcrumb-item active text-white-50">任务详情</li>
+                    </ol>
+                </nav>
+                <h1 class="page-title">{$task.title}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h4 class="mb-2">{$task.title}</h4>
+                            <div class="text-muted">
+                                <span class="me-3"><i class="bi bi-eye"></i> {$task.view_count} 次浏览</span>
+                                <span class="me-3"><i class="bi bi-people"></i> {$task.applied_count}{if $task.total_count > 0}/{$task.total_count}{/if} 人申请</span>
+                                <span><i class="bi bi-clock"></i> 发布于 {$task.create_time|format_date}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price-badge" style="font-size: 1.5rem;">¥{$task.price}</div>
+                            <div class="text-muted mt-1">任务单价</div>
+                        </div>
+                    </div>
+
+                    {if $task.tags}
+                    <div class="mb-4">
+                        <h6 class="mb-2">任务标签</h6>
+                        {volist name="task.tag_list" id="tag"}
+                        <span class="tag">{$tag}</span>
+                        {/volist}
+                    </div>
+                    {/if}
+
+                    <ul class="nav nav-tabs mb-4" id="taskTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button">
+                                任务信息
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="requirements-tab" data-bs-toggle="tab" data-bs-target="#requirements" type="button">
+                                招募要求
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="process-tab" data-bs-toggle="tab" data-bs-target="#process" type="button">
+                                申请流程
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button">
+                                评论 ({$comments|count})
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="taskTabsContent">
+                        <div class="tab-pane fade show active" id="info">
+                            <h5 class="mb-3">任务描述</h5>
+                            <div class="text-muted">
+                                {$task.description|default='暂无任务描述'|raw|nl2br}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="requirements">
+                            <h5 class="mb-3">招募要求</h5>
+                            <div class="text-muted">
+                                {$task.requirements|default='暂无招募要求'|raw|nl2br}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="process">
+                            <h5 class="mb-3">申请流程</h5>
+                            <div class="text-muted">
+                                {$task.process|default='点击下方"申请任务"按钮，加入钉钉群获取任务详情。'|raw|nl2br}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="comments">
+                            <h5 class="mb-3">任务评论</h5>
+                            
+                            {if isset($user)}
+                            <form id="commentForm" class="mb-4">
+                                <div class="mb-2">
+                                    <textarea class="form-control" name="content" rows="3" placeholder="发表您的评论..." required></textarea>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-chat-dots"></i> 发表评论
+                                    </button>
+                                </div>
+                            </form>
+                            {else}
+                            <div class="alert alert-info mb-4">
+                                <i class="bi bi-info-circle"></i> 
+                                <a href="/login" class="alert-link">登录</a> 后可发表评论
+                            </div>
+                            {/if}
+
+                            {if count($comments) > 0}
+                            <div>
+                                {volist name="comments" id="comment"}
+                                <div class="comment-item d-flex">
+                                    <div class="comment-avatar">
+                                        {$comment.user.nickname|default='用户'|mb_substr=0,1|strtoupper}
+                                    </div>
+                                    <div class="comment-content">
+                                        <div class="d-flex align-items-center">
+                                            <span class="comment-author">{$comment.user.nickname|default='用户'}</span>
+                                            <span class="comment-time">{$comment.create_time|format_date}</span>
+                                        </div>
+                                        <div class="comment-text">{$comment.content|nl2br}</div>
+                                    </div>
+                                </div>
+                                {/volist}
+                            </div>
+                            {else}
+                            <div class="empty-state py-4">
+                                <i class="bi bi-chat-dots" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1">暂无评论</h4>
+                                <p class="mb-0">快来发表第一条评论吧！</p>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 80px;">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="price-badge" style="font-size: 2rem; display: inline-block;">¥{$task.price}</div>
+                        <div class="text-muted mt-2">任务单价</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {if !isset($user)}
+                            <button class="btn btn-primary btn-lg" onclick="location.href='/login'">
+                                <i class="bi bi-box-arrow-in-right"></i> 登录后申请
+                            </button>
+                        {elseif $hasApplied}
+                            <div class="alert alert-info text-center mb-0">
+                                <i class="bi bi-info-circle"></i> 
+                                您已申请该任务<br>
+                                <span class="badge badge-{$statusClass[$userTask.status]}">
+                                    {$statusText[$userTask.status]}
+                                </span>
+                            </div>
+                            {if $userTask.status == 1}
+                            <button class="btn btn-success btn-lg" id="submitTaskBtn">
+                                <i class="bi bi-check-circle"></i> 提交任务
+                            </button>
+                            {/if}
+                        {else}
+                            <button class="btn btn-primary btn-lg" id="applyBtn">
+                                <i class="bi bi-plus-circle"></i> 申请任务
+                            </button>
+                        {/if}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">已申请人数</span>
+                            <span><strong>{$task.applied_count}</strong></span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar" style="width: {$task.total_count > 0 ? ($task.applied_count / $task.total_count * 100) : 0}%;">
+                            </div>
+                        </div>
+                        {if $task.total_count > 0}
+                        <div class="text-end text-muted mt-1">
+                            剩余名额：<strong>{$task.total_count - $task.applied_count}</strong> 个
+                        </div>
+                        {/if}
+                    </div>
+
+                    <div class="list-unstyled">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">浏览量</span>
+                            <span><i class="bi bi-eye"></i> {$task.view_count}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">发布时间</span>
+                            <span>{$task.create_time|format_date}</span>
+                        </div>
+                        {if $task.end_time > 0}
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">截止时间</span>
+                            <span>{$task.end_time|format_date}</span>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="qrCodeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-qr-code-scan"></i> 加入钉钉群
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="qrcode-container">
+                    <div id="qrCodeContent">
+                        <p class="text-muted">请扫描下方二维码加入钉钉群</p>
+                        <div id="qrcodePlaceholder" class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 
+                            申请成功后将显示钉钉群二维码
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>注意：</strong>请使用钉钉扫描二维码加入任务群，获取任务详情和提交方式。
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('applyBtn')?.addEventListener('click', function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> 申请中...';
+
+    axios.post('/task/apply', { task_id: {$task.id} })
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                
+                const qrContent = document.getElementById('qrCodeContent');
+                if (response.data.data.qrcode) {
+                    qrContent.innerHTML = `
+                        <img src="${response.data.data.qrcode}" alt="钉钉群二维码" class="qrcode-img">
+                        <p class="text-muted mt-3">任务：${response.data.data.task_title}</p>
+                    `;
+                } else {
+                    qrContent.innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            申请成功！请联系管理员获取钉钉群二维码。
+                        </div>
+                    `;
+                }
+                
+                const modal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
+                modal.show();
+                
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            } else {
+                showToast(response.data.msg, 'error');
+                if (response.data.data?.redirect) {
+                    setTimeout(function() {
+                        window.location.href = response.data.data.redirect;
+                    }, 1000);
+                }
+            }
+        })
+        .catch(function(error) {
+            showToast('申请失败，请重试', 'error');
+        })
+        .finally(function() {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-plus-circle"></i> 申请任务';
+        });
+});
+
+document.getElementById('submitTaskBtn')?.addEventListener('click', function() {
+    if (confirm('确定要提交任务吗？提交后将进入审核状态。')) {
+        axios.post('/task/submit', { task_id: {$task.id} })
+            .then(function(response) {
+                if (response.data.code === 1) {
+                    showToast(response.data.msg, 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    showToast(response.data.msg, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('提交失败，请重试', 'error');
+            });
+    }
+});
+
+document.getElementById('commentForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('task_id', {$task.id});
+    
+    axios.post('/task/comment', formData)
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast(response.data.msg, 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('评论失败，请重试', 'error');
+        });
+});
+</script>
+
+{include file="layout/footer" /}

@@ -1,0 +1,245 @@
+{include file="layout/header" /}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-title">完善个人资料</h1>
+                <p class="mb-0 mt-2" style="opacity: 0.9;">完善教育经历和工作经历，提高任务申请通过率</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{if $showTip}
+<div class="container mt-4">
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>提示：</strong>请完善您的教育经历和工作经历，这将帮助您获得更多任务机会并提高申请通过率。
+    </div>
+</div>
+{/if}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center p-4">
+                    <div class="comment-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                        {$user.nickname|mb_substr=0,1|strtoupper}
+                    </div>
+                    <h4 class="mb-1">{$user.nickname}</h4>
+                    <p class="text-muted">@{$user.username}</p>
+                    
+                    <div class="d-flex justify-content-around mt-4">
+                        <div class="text-center">
+                            <div class="h5 mb-0">{$user.balance|default=0}</div>
+                            <div class="text-muted small">累计收益</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="h5 mb-0">{$user.pending_balance|default=0}</div>
+                            <div class="text-muted small">待入账</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-clipboard-check"></i> 资料完成度
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>教育经历</span>
+                            <span class="{$user.education_status ? 'text-success' : 'text-warning'}">
+                                {$user.education_status ? '已完善' : '未完善'}
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {$user.education_status ? 'bg-success' : 'bg-warning'}" style="width: {$user.education_status ? 100 : 0}%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>工作经历</span>
+                            <span class="{$user.work_status ? 'text-success' : 'text-warning'}">
+                                {$user.work_status ? '已完善' : '未完善'}
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {$user.work_status ? 'bg-success' : 'bg-warning'}" style="width: {$user.work_status ? 100 : 0}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="bi bi-mortarboard"></i> 教育经历
+                    </h6>
+                    {if $user.education_status}
+                    <span class="badge badge-success">已完善</span>
+                    {/if}
+                </div>
+                <div class="card-body">
+                    <form id="educationForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">学校名称 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="school" placeholder="请输入学校名称" value="{$user.education[0].school|default=''}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">专业 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="major" placeholder="请输入专业名称" value="{$user.education[0].major|default=''}" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">学历 <span class="text-danger">*</span></label>
+                                <select class="form-select" name="degree" required>
+                                    <option value="">请选择学历</option>
+                                    <option value="大专" {if $user.education[0].degree == '大专'}selected{/if}>大专</option>
+                                    <option value="本科" {if $user.education[0].degree == '本科'}selected{/if}>本科</option>
+                                    <option value="硕士" {if $user.education[0].degree == '硕士'}selected{/if}>硕士</option>
+                                    <option value="博士" {if $user.education[0].degree == '博士'}selected{/if}>博士</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">入学年份</label>
+                                <input type="number" class="form-control" name="start_year" placeholder="如：2018" value="{$user.education[0].start_year|default=''}" min="1990" max="2024">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">毕业年份</label>
+                                <input type="number" class="form-control" name="end_year" placeholder="如：2022" value="{$user.education[0].end_year|default=''}" min="1990" max="2030">
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> 保存教育经历
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="bi bi-briefcase"></i> 工作经历
+                    </h6>
+                    {if $user.work_status}
+                    <span class="badge badge-success">已完善</span>
+                    {/if}
+                </div>
+                <div class="card-body">
+                    <form id="workForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">公司名称 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="company" placeholder="请输入公司名称" value="{$user.work[0].company|default=''}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">职位 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="position" placeholder="请输入职位名称" value="{$user.work[0].position|default=''}" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">工作描述</label>
+                            <textarea class="form-control" name="description" rows="3" placeholder="请简要描述您的工作内容">{$user.work[0].description|default=''}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">开始日期</label>
+                                <input type="date" class="form-control" name="start_date" value="{$user.work[0].start_date|default=''}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">结束日期</label>
+                                <input type="date" class="form-control" name="end_date" value="{$user.work[0].end_date|default=''}" id="endDateInput">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="isCurrent" name="is_current" value="1" {if $user.work[0].is_current == 1}checked{/if}>
+                                    <label class="form-check-label" for="isCurrent">
+                                        目前仍在此工作
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> 保存工作经历
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('educationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    axios.post('/user/save-education', formData)
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast(response.data.msg, 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('保存失败，请重试', 'error');
+        });
+});
+
+document.getElementById('workForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    axios.post('/user/save-work', formData)
+        .then(function(response) {
+            if (response.data.code === 1) {
+                showToast(response.data.msg, 'success');
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast(response.data.msg, 'error');
+            }
+        })
+        .catch(function(error) {
+            showToast('保存失败，请重试', 'error');
+        });
+});
+
+document.getElementById('isCurrent')?.addEventListener('change', function() {
+    const endDateInput = document.getElementById('endDateInput');
+    if (this.checked) {
+        endDateInput.disabled = true;
+        endDateInput.value = '';
+    } else {
+        endDateInput.disabled = false;
+    }
+});
+
+if (document.getElementById('isCurrent')?.checked) {
+    document.getElementById('endDateInput').disabled = true;
+}
+</script>
+
+{include file="layout/footer" /}
