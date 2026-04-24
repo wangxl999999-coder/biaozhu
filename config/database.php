@@ -7,7 +7,7 @@ return [
             'hostname' => env('hostname', '127.0.0.1'),
             'database' => env('database', 'biaozhu'),
             'username' => env('username', 'root'),
-            'password' => env('password', ''),
+            'password' => env('password', '123123'),
             'hostport' => env('hostport', '3306'),
             'charset' => 'utf8mb4',
             'prefix' => env('prefix', 'bz_'),

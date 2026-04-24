@@ -13,7 +13,9 @@ use think\facade\Request;
 
 class Index extends BaseController
 {
-    protected $middleware = [\app\middleware\AdminAuth::class];
+    protected $middleware = [
+        \app\middleware\AdminAuth::class => ['except' => ['login', 'logout']]
+    ];
 
     public function index()
     {
